@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.quickstart</groupId>
-  <artifactId>quickstart-monitor-prometheus</artifactId>
+  <artifactId>quickstart-prometheus</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>quickstart-monitor-prometheus</name>
   <url>http://maven.apache.org</url>

@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.quickstart</groupId>
-  <artifactId>quickstart-monitor-zabbix</artifactId>
+  <artifactId>quickstart-zabbix</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>quickstart-monitor-zabbix</name>
   <url>http://maven.apache.org</url>
