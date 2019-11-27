@@ -8,7 +8,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>quickstart-zabbix</artifactId>
+  <artifactId>quickstart-btrace</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}-${project.version}</name>
   <url>http://maven.apache.org</url>
@@ -17,7 +17,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
 
   <dependencies>
 
