@@ -3,8 +3,7 @@ https://github.com/youngzil/quickstart-monitor
 
 
 
-Greys是一个JVM进程执行过程中的异常诊断工具。 在不中断程序执行的情况下轻松完成JVM相关问题排查工作。
-和HouseMD一样，Greys-Anatomy取名同名美剧“实习医生格蕾”，目的是向前辈致敬。代码编写的时候参考了BTrace和HouseMD两个前辈的思路。
+
 
 
 可以使用zabbix，skywalking等监控

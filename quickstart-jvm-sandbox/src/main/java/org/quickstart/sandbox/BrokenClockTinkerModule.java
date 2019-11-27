@@ -1,13 +1,16 @@
 package org.quickstart.sandbox;
 
-
+import com.alibaba.jvm.sandbox.api.Information;
+import com.alibaba.jvm.sandbox.api.Module;
+import com.alibaba.jvm.sandbox.api.ProcessController;
+import com.alibaba.jvm.sandbox.api.annotation.Command;
+import com.alibaba.jvm.sandbox.api.listener.ext.Advice;
+import com.alibaba.jvm.sandbox.api.listener.ext.AdviceListener;
+import com.alibaba.jvm.sandbox.api.listener.ext.EventWatchBuilder;
+import com.alibaba.jvm.sandbox.api.resource.ModuleEventWatcher;
 import javax.annotation.Resource;
+import org.kohsuke.MetaInfServices;
 
-/**
- * @author youngzil@163.com
- * @description TODO
- * @createTime 2019/11/27 15:56
- */
 @MetaInfServices(Module.class)
 @Information(id = "broken-clock-tinker")
 public class BrokenClockTinkerModule implements Module {
@@ -19,7 +22,7 @@ public class BrokenClockTinkerModule implements Module {
   public void repairCheckState() {
 
     new EventWatchBuilder(moduleEventWatcher)
-        .onClass("com.taobao.demo.Clock")
+        .onClass("org.quickstart.sandbox.Clock")
         .onBehavior("checkState")
         .onWatch(new AdviceListener() {
 

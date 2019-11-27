@@ -1,6 +1,8 @@
-https://github.com/btraceio/btrace
+http://csug.github.io/HouseMD/
+https://github.com/CSUG/HouseMD
 
 
+HouseMD不再更新，推荐greys-anatomy
 
 
 很早的时候，我们使用BTrace排查问题，在感叹BTrace的强大之余，也曾好几次将线上系统折腾挂掉。2012年淘宝的聚石写了HouseMD，将常用的几个Btrace脚本整合在一起形成一个独立风格的应用，但其核心代码用的是Scala，我们没这方面的编程维护经验，所以只好艳羡HouseMD的才思敏捷而无法在其上增加功能。
@@ -8,7 +10,6 @@ https://github.com/btraceio/btrace
 Greys是一个JVM进程执行过程中的异常诊断工具，可以在不中断程序执行的情况下轻松完成问题排查工作。
 
 和HouseMD一样，Greys-Anatomy取名同名美剧“实习医生格蕾”，目的是向前辈致敬。代码编写的时候参考了BTrace和HouseMD两个前辈的思路。
-
 
 
 
