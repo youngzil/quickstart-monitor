@@ -12,6 +12,8 @@ Greys是一个JVM进程执行过程中的异常诊断工具，可以在不中断
 常见的动态追踪工具有BTrace、HouseMD（该项目已经停止开发）、Greys-Anatomy（国人开发，个人开发者）、Byteman（JBoss出品），注意Java运行时追踪工具并不限于这几种，但是这几个是相对比较常用的，本文主要介绍BTrace。
 
 
+sh btrace -o out.csv 70386 /Users/yangzl/git/quickstart-monitor/quickstart-btrace/target/test-classes/org/quickstart/btrace/Tracer.java
+
 
 参考
 https://blog.csdn.net/xingbear/article/details/78091851
