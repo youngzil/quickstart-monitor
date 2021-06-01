@@ -1,0 +1,21 @@
+# docker compose -f docker-compose.yml up -d
+# docker compose -f docker-compose.yml down
+# docker-compose restart prometheus
+
+version: "2"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.27.1
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - /Users/lengfeng/software/prometheus-2.27.1.darwin-amd64/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:7.5.2
+    container_name: grafana
+    ports:
+      - 3000:3000
+    user: "104"
