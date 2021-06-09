@@ -12,7 +12,7 @@
 [Prometheus Github](https://github.com/prometheus/prometheus)  
 [Java客户端](https://github.com/prometheus/client_java) ：Prometheus instrumentation library for JVM applications  
 [Prometheus下载](https://prometheus.io/download/)  
-[]()  
+[Prometheus官方文档](https://prometheus.io/docs/introduction/overview/)  
 []()  
 
 
@@ -21,15 +21,19 @@ From metrics to insight Power your metrics and alerting with a leading open-sour
 从指标到洞察力 通过领先的指标为您的指标和警报提供支持 开源监控解决方案。
 
 
+Prometheus 是一个时序数据库。
+
+数据模型
+Prometheus 在底层将所有数据都按时间序列排序，
 
 
 
 
 
+[Prometheus操作指南](https://yunlzheng.gitbook.io/prometheus-book)  
 
-[Prometheus操作指南](https://github.com/yunlzheng/prometheus-book)  
-
-
+[Prometheus学习系列](https://www.jianshu.com/u/a1f163a32328)  
+[Prometheus中文文档](https://hulining.gitbook.io/prometheus/)
 
 
 
@@ -102,8 +106,19 @@ curl -X POST http://localhost:9090/-/reload
 
 docker pull prom/prometheus:v2.27.1
 
-docker run -d -p 9090:9090 --name prometheus -v /Users/lengfeng/software/prometheus-2.27.1.darwin-amd64/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.27.1
+# 创建持久化目录
+mkdir -p /Users/lengfeng/prometheus/data
 
+docker run -d --restart always -e TZ=Asia/Shanghai -p 9090:9090 --name prometheus -v /Users/lengfeng/software/prometheus-2.27.1.darwin-amd64/prometheus.yml:/etc/prometheus/prometheus.yml -v /Users/lengfeng/prometheus/data:/prometheus prom/prometheus:v2.27.1
+
+
+docker run -d --net=bridge -p 9090:9090 --name prometheus -v /Users/lengfeng/software/prometheus-2.27.1.darwin-amd64/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.27.1
+
+[comment]: <> (docker run -d --restart always -e TZ=Asia/Shanghai --hostname prometheus --name prometheus-server -p 9090:9090 -v /data/prometheus/server/data:/prometheus -v /data/prometheus/server/conf/prometheus.yml:/etc/prometheus/prometheus.yml -u root prom/prometheus:v2.5.0)
+
+
+
+把prometheus配置文件配置成宿主机的IP就好了
 
 
 运行 docker start prometheus 启动服务
@@ -114,6 +129,19 @@ docker run -d -p 9090:9090 --name prometheus -v /Users/lengfeng/software/prometh
 UI 页面跟上面一样都使用 IP：9090
 
 启动完成后，可以通过http://localhost:9090访问Prometheus的UI界面
+
+
+[INSTALLATION](https://prometheus.io/docs/prometheus/latest/installation/)
+
+
+
+
+
+
+### 使用Dockerfile自定义构建镜像
+
+[基于docker封装prometheus解决时区问题](https://cloud.tencent.com/developer/article/1684313) 测试最新版本不行  
+[INSTALLATION](https://prometheus.io/docs/prometheus/latest/installation/)
 
 
 
@@ -211,5 +239,43 @@ curl -X POST http://localhost:9090/-/reload
 ---------------------------------------------------------------------------------------------------------------------
 
 
+
+Prometheus定义了4种不同的指标类型(metric type)：Counter（计数器）、Gauge（仪表盘）、Histogram（直方图）、Summary（摘要）。
+
+
+
+1. 计数器(Counter)
+是一个单调递增的数字，只能加，不能减，也可以归0.
+可以使用计数器来表示已服务请求，已完成任务或错误的数量。
+
+2. Gauge
+可任意上升和下降。
+通常用于测量值，例如温度或当前的内存使用量，还用于可能上升和下降的“计数”，例如并发请求数。
+
+3. 直方图（Histogram）
+将计数放到一个一个的桶中。
+[直方图讲解](https://cloud.tencent.com/developer/article/1495303)
+
+累积直方图:
+Prometheus 的 histogram 是一种累积直方图，与上面的区间划分方式是有差别的，它的划分方式如下：还假设每个 bucket 的宽度是 0.2s，那么第一个 bucket 表示响应时间小于等于 0.2s 的请求数量，第二个 bucket 表示响应时间小于等于 0.4s 的请求数量，以此类推。也就是说，每一个 bucket 的样本包含了之前所有 bucket 的样本，所以叫累积直方图。
+
+
+4. 摘要（Summary）
+类似于直方图，就是加入了百分位。
+
+
+Enumeration
+Info
+
+
+
+[](https://github.com/prometheus/client_java#Instrumenting)  
+[METRIC TYPES](https://prometheus.io/docs/concepts/metric_types/)  
+[](https://prometheus.io/docs/practices/instrumentation/#counter-vs.-gauge,-summary-vs.-histogram)  
+[Prometheus概念](https://xujiyou.work/%E4%BA%91%E5%8E%9F%E7%94%9F/Prometheus/Prometheus%E6%A6%82%E5%BF%B5.html)  
+[Prometheus指标和标签命名](https://blog.csdn.net/xtayfjpk/article/details/103446842)  
+
+[]()  
+[]()  
 
 
