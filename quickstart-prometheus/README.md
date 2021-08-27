@@ -1,6 +1,9 @@
 - [Prometheus介绍](#Prometheus介绍)
 - [Prometheus安装](#Prometheus安装)
 - [Prometheus的自定义查询语言PromQL](#Prometheus的自定义查询语言PromQL)
+- [Prometheus指标类型](#Prometheus指标类型)
+- [Prometheus原理](#Prometheus原理)
+- [通过micrometer实时监控线程池的各项指标](#通过micrometer实时监控线程池的各项指标)
 
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -13,6 +16,8 @@
 [Java客户端](https://github.com/prometheus/client_java) ：Prometheus instrumentation library for JVM applications  
 [Prometheus下载](https://prometheus.io/download/)  
 [Prometheus官方文档](https://prometheus.io/docs/introduction/overview/)  
+[prometheus函数文档](https://prometheus.io/docs/prometheus/latest/querying/functions/#increase)
+[prometheus blog](https://promlabs.com/blog/)
 []()  
 
 
@@ -34,7 +39,7 @@ Prometheus 在底层将所有数据都按时间序列排序，
 
 [Prometheus学习系列](https://www.jianshu.com/u/a1f163a32328)  
 [Prometheus中文文档](https://hulining.gitbook.io/prometheus/)
-
+[Prometheus 非官方中文手册](https://www.bookstack.cn/read/prometheus-manual/prometheus-querying-functions.md#delta())
 
 
 
@@ -151,6 +156,7 @@ UI 页面跟上面一样都使用 IP：9090
 
 [node_exporter源码地址](https://github.com/prometheus/node_exporter)  
 [node_exporter下载](https://github.com/prometheus/node_exporter/releases)  
+[node_exporter介绍分类](https://prometheus.io/docs/instrumenting/exporters/)  
 
 在下载安装Prometheus之前我们先安装node_exporter插件，用于提供服务器监控的指标(比如：CPU、内存、磁盘、磁盘读写速率等指标)，是一个非常常用的Prometheus Client插件。
 
@@ -224,23 +230,167 @@ curl -X POST http://localhost:9090/-/reload
 
 
 
+[使用 prometheus jmx_exporter监控kafka](https://github.com/jianzhiunique/kafka-jmx-exporter)  
+[prometheus jmx_exporter地址](https://github.com/prometheus/jmx_exporter)  
+
+
+
+## Prometheus配置文件
+
+
+[prometheus学习系列五： Prometheus配置文件](https://www.cnblogs.com/zhaojiedi1992/p/zhaojiedi_liunx_60_prometheus_config.html)  
+[Prometheus配置文件prometheus.yml 四个模块详解](http://www.21yunwei.com/archives/7321)  
+
+
 
 ---------------------------------------------------------------------------------------------------------------------
 ## Prometheus的自定义查询语言PromQL
 
+Prometheus 提供了一种名为 PromQL(Prometheus Query Language) 的功能查询语言，使用户可以实时选择和汇总时间序列数据。，表达式的结果可以在 Prometheus 的表达式浏览器中显示为图形和表格数据，也可以由外部系统通过 HTTP API 使用
+
+
+### 查询时间序列
+
+PromQL还支持用户根据时间序列的标签匹配模式来对时间序列进行过滤，目前主要支持两种匹配模式：完全匹配和正则匹配。
+
+PromQL支持使用=和!=两种完全匹配模式：
+1. 通过使用label=value可以选择那些标签满足表达式定义的时间序列；
+2. 反之使用label!=value则可以根据标签匹配排除时间序列；
+
+PromQL还可以支持使用正则表达式作为匹配条件，多个表达式之间使用|进行分离：
+1. 使用label=~regx表示选择那些标签符合正则表达式定义的时间序列；
+2. 反之使用label!~regx进行排除；
+
+Prometheus中的所有正则表达式都使用 [RE2语法](https://github.com/google/re2/wiki/Syntax) 。
+
+也就是标签查询  
+如  
+如果我们只需要查询所有http_requests_total时间序列中满足标签instance为localhost:9090的时间序列，则可以使用如下表达式：  
+http_requests_total{instance="localhost:9090"}
+
+反之使用instance!="localhost:9090"则可以排除这些时间序列：  
+http_requests_total{instance!="localhost:9090"}
+
+如果想查询多个环节下的时间序列序列可以使用如下表达式：  
+http_requests_total{environment=~"staging|testing|development",method!="GET"}
+
+
+
+
+### 范围查询
+
+直接通过类似于PromQL表达式http_requests_total查询时间序列时，返回值中只会包含该时间序列中的最新的一个样本值，这样的返回结果我们称之为瞬时向量。而相应的这样的表达式称之为瞬时向量表达式。
+
+而如果我们想过去一段时间范围内的样本数据时，我们则需要使用区间向量表达式。区间向量表达式和瞬时向量表达式之间的差异在于在区间向量表达式中我们需要定义时间选择的范围，时间范围通过时间范围选择器[]进行定义。
+
+例如，通过以下表达式可以选择最近5分钟内的所有样本数据：  
+http_requests_total{}[5m]
+
+除了使用m表示分钟以外，PromQL的时间范围选择器支持其它时间单位：
+s - 秒
+m - 分钟
+h - 小时
+d - 天
+w - 周
+y - 年
+
+
+瞬时向量表达式
+区间向量表达式
+在瞬时向量表达式或者区间向量表达式中，都是以当前时间为基准：
+
+http_request_total{} # 瞬时向量表达式，选择当前最新的数据
+http_request_total{}[5m] # 区间向量表达式，选择以当前时间为基准，5分钟内的数据
+
+
+
+
+### 时间位移操作
+
+如果我们想查询，5分钟前的瞬时样本数据，或昨天一天的区间内的样本数据呢? 这个时候我们就可以使用位移操作，位移操作的关键字为offset。
+
+可以使用offset时间位移操作：
+http_request_total{} offset 5m
+http_request_total{}[1d] offset 1d
+
+
+
+
+### 使用聚合操作
+
+一般来说，如果描述样本特征的标签(label)在并非唯一的情况下，通过PromQL查询数据，会返回多条满足这些特征维度的时间序列。而PromQL提供的聚合操作可以用来对这些时间序列进行处理，形成一条新的时间序列：
+
+
+# 查询系统所有http请求的总量
+sum(http_request_total)
+
+# 按照mode计算主机CPU的平均使用时间
+avg(node_cpu) by (mode)
+
+# 按照主机查询各个主机的CPU使用率
+sum(sum(irate(node_cpu{mode!='idle'}[5m]))  / sum(irate(node_cpu[5m]))) by (instance)
+
+
+
+
+
+### 计算速率
+1. rate():该计算增加速率每秒，平均在整个提供时间窗口。【单位是1/s】rate只能用在counter的 metrics 类型上进行计算。
+2. irate():只考虑最近两个样本所提供的时间窗口下的计算并忽略所有更早的。输出将比rate()更加尖锐【单位是1/s】
+3. increase():这个函数完全等同于rate()除了它不将最终单位转换为“每秒”( 1/s)。相反，最终的输出单元是每个提供的时间窗口。Thus increase(foo[5m]) / (5 * 60) is 100% equivalent to rate(foo[5m]).【跟rate()比只有单位不同，是给定的时间单位】
+
+
+[How Exactly Does PromQL Calculate Rates?](https://promlabs.com/blog/2021/01/29/how-exactly-does-promql-calculate-rates)
+[prometheus的rate与irate内部是如何计算的](https://zhangguanzhang.github.io/2020/07/30/prometheus-rate-and-irate/)
+
+
+
+### 计算差值
+1. delta():delta(v range-vector)函数，计算一个范围向量v的第一个元素和最后一个元素之间的差值。delta函数返回值类型只能是gauges。
+2. idelta()：idelta(v range-vector)函数，输入一个范围向量，返回key: value = 度量指标： 每最后两个样本值差值。
+
+delta(v range-vector)函数，计算一个范围向量v的第一个元素和最后一个元素之间的差值。返回值：key:value=度量指标：差值
+
+下面这个表达式例子，返回过去两小时的CPU温度差：
+delta(cpu_temp_celsius{host=”zeus”}[2h])
+
+delta函数返回值类型只能是gauges。
 
 
 
 
 
 
+### 在HTTP API中使用PromQL
+
+
+
+
+
+
+参考
+[探索PromQL](https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/promql)  
+[Prometheus-基础系列-(四)-PromQL语句实践-2](https://zhuanlan.zhihu.com/p/121104877)  
+[Prometheus查询语句官方文档](https://prometheus.io/docs/prometheus/latest/querying/basics/)  
+
+
+[Prometheus学习笔记（7）PromQL玩法入门](https://www.cnblogs.com/linuxk/p/12054401.html)  
+[使用PromQL查询监控数据](https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/quickstart/prometheus-quick-start/promql_quickstart)  
+[第05期：Prometheus 数据查询（一）](https://segmentfault.com/a/1190000023741116)  
+[]()  
+[]()  
 
 
 ---------------------------------------------------------------------------------------------------------------------
-
+## Prometheus指标类型
 
 
 Prometheus定义了4种不同的指标类型(metric type)：Counter（计数器）、Gauge（仪表盘）、Histogram（直方图）、Summary（摘要）。
+
+
+Counter：只增不减的计数器
+Gauge：可增可减的仪表盘
+
 
 
 
@@ -275,7 +425,60 @@ Info
 [Prometheus概念](https://xujiyou.work/%E4%BA%91%E5%8E%9F%E7%94%9F/Prometheus/Prometheus%E6%A6%82%E5%BF%B5.html)  
 [Prometheus指标和标签命名](https://blog.csdn.net/xtayfjpk/article/details/103446842)  
 
+
+
+[Prometheus基础应用笔记](https://coconutmilktaro.top/2019/Prometheus%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8%E7%AC%94%E8%AE%B0/)  
+[一篇文章带你理解和使用Prometheus的指标](https://frezc.github.io/2019/08/03/prometheus-metrics/)  
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+## Prometheus原理
+
+
+
+每一个指标就是一个Collector.MetricFamilySamples对象
+
+
+
+SpringBoot2中监控路径/actuator/prometheus对应的处理类
+PrometheusScrapeEndpoint
+
+
+
+
+[Prometheus架构原理及监控告警配置实现](https://www.modb.pro/db/45956)  
+[Prometheus 原理和源码分析](https://www.infoq.cn/article/prometheus-theory-source-code)  
+[Prometheus原理简介](https://zhuanlan.zhihu.com/p/126513347)  
 []()  
 []()  
+[]()  
+
+
+
+
+[自定义Exporter示例代码](https://github.com/ogibayashi/kafka-topic-exporter)  
+[Prometheus系列--Exporter原理](https://zhuanlan.zhihu.com/p/273229856)  
+[使用Java自定义Exporter](https://yunlzheng.gitbook.io/prometheus-book/part-ii-prometheus-jin-jie/exporter/custom_exporter_with_java)
+[Exporter对http返回格式的要求见官方文档](https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format)  
+[深入探索Prometheus Exporter](https://www.jianshu.com/p/dc4dbb497559)  
+[]()  
+[]()  
+[]()  
+
+
+---------------------------------------------------------------------------------------------------------------------
+## 通过micrometer实时监控线程池的各项指标
+
+
+
+[Java线程池监控预警实现](https://www.jianshu.com/p/3001431f1b0a)  
+[通过micrometer实时监控线程池的各项指标](https://www.cnblogs.com/throwable/p/10708351.html)  
+
+
+
+
 
 

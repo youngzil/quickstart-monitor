@@ -99,6 +99,8 @@ Annotation: 注解,用来记录请求特定事件相关信息(例如时间)，�
 [Istio Zipkin](https://istio.io/latest/docs/tasks/observability/distributed-tracing/zipkin/)  
 [Zipkin Tracing Integration](https://www.instana.com/supported-technologies/zipkin-apm-integration/)  
 [Distributed Systems Tracing with Zipkin](https://blog.twitter.com/engineering/en_us/a/2012/distributed-systems-tracing-with-zipkin.html)  
+[ZIPKIN TUTORIAL: GET STARTED EASILY WITH DISTRIBUTED TRACING](https://www.scalyr.com/blog/zipkin-tutorial-distributed-tracing/)  
+[Distributed Tracing with Spring Cloud Sleuth and Spring Cloud Zipkin](https://spring.io/blog/2016/02/15/distributed-tracing-with-spring-cloud-sleuth-and-spring-cloud-zipkin)  
 
 [Zipkin快速开始](https://segmentfault.com/a/1190000012342007)  
 [Zipkin介绍和使用](https://www.jianshu.com/p/2fcbc8bba1c1)  
