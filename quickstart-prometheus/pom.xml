@@ -16,10 +16,17 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <prometheus.client.version>0.11.0</prometheus.client.version>
+    <prometheus.client.version>0.12.0</prometheus.client.version>
   </properties>
 
   <dependencies>
+
+    <!-- The client -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+      <version>${prometheus.client.version}</version>
+    </dependency>
 
     <!-- Hotspot JVM metrics-->
     <dependency>
@@ -40,6 +47,16 @@
       <artifactId>simpleclient_pushgateway</artifactId>
       <version>${prometheus.client.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.mashape.unirest</groupId>
+      <artifactId>unirest-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

@@ -4,6 +4,9 @@
 - [Prometheus指标类型](#Prometheus指标类型)
 - [Prometheus原理](#Prometheus原理)
 - [通过micrometer实时监控线程池的各项指标](#通过micrometer实时监控线程池的各项指标)
+- [Prometheus HTTP API接口](#Prometheus-HTTP-API接口)
+
+
 
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -481,4 +484,9 @@ PrometheusScrapeEndpoint
 
 
 
+
+## Prometheus HTTP API接口
+
+[Prometheus 查询语言 PromQL 使用说明](https://jimmysong.io/kubernetes-handbook/practice/promql.html)  
+[官方HTTP API接口文档](https://prometheus.io/docs/prometheus/latest/querying/api/)  
 
