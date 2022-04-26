@@ -1,0 +1,62 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "app": "data-proxy-go",
+          "instance": "127.0.0.234:8082",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_name": "data-proxy-go",
+          "kubernetes_namespace": "bigdata",
+          "kubernetes_node": "172.30.1.12",
+          "method": "GET",
+          "outcome": "SUCCESS",
+          "status": "200",
+          "uri": "/metrics"
+        },
+        "value": [
+          1650940078.614,
+          "0.00012192540000000523"
+        ]
+      },
+      {
+        "metric": {
+          "app": "data-proxy-go",
+          "instance": "127.0.0.234:8082",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_name": "data-proxy-go",
+          "kubernetes_namespace": "bigdata",
+          "kubernetes_node": "172.30.1.12",
+          "method": "POST",
+          "outcome": "ERROR",
+          "status": "400",
+          "uri": "XXX"
+        },
+        "value": [
+          1650940078.614,
+          "0"
+        ]
+      },
+      {
+        "metric": {
+          "app": "data-proxy-go",
+          "instance": "127.0.0.234:8082",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_name": "data-proxy-go",
+          "kubernetes_namespace": "bigdata",
+          "kubernetes_node": "172.30.1.12",
+          "method": "POST",
+          "outcome": "SUCCESS",
+          "status": "200",
+          "uri": "XXX"
+        },
+        "value": [
+          1650940078.614,
+          "0"
+        ]
+      }
+    ]
+  }
+}

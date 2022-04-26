@@ -1,0 +1,80 @@
+{
+  "status":"success",
+  "data":{
+    "resultType":"matrix",
+    "result":[
+      {
+        "metric":{
+          "app": "object-group",
+          "exception": "None",
+          "instance": "127.0.0.1:8080",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_namespace": "bigdata",
+          "kubernetes_name":"data-proxy-go"
+        },
+        "values":[
+          [
+            1650873870.781,
+            "0.0019495680000005677"
+          ],
+          [
+            1650873885.781,
+            "0.001898487333335197"
+          ],
+          [
+            1650873900.781,
+            "0.0017728126666677704"
+          ]
+        ]
+      },
+      {
+        "metric":{
+          "app": "object-group",
+          "exception": "None",
+          "instance": "127.0.0.1:8080",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_namespace": "bigdata",
+          "kubernetes_name":"hermes-center"
+        },
+        "values":[
+          [
+            1650873870.781,
+            "0.03442969898934658"
+          ],
+          [
+            1650873885.781,
+            "0.03991987311900099"
+          ],
+          [
+            1650873900.781,
+            "0.03427173958668605"
+          ]
+        ]
+      },
+      {
+        "metric":{
+          "app": "object-group",
+          "exception": "None",
+          "instance": "127.0.0.1:8080",
+          "job": "kubernetes-service-endpoints",
+          "kubernetes_name": "object-group",
+          "kubernetes_namespace": "bigdata"
+        },
+        "values":[
+          [
+            1650873630.781,
+            "0.007260223172415657"
+          ],
+          [
+            1650873735.781,
+            "0.008650203771432935"
+          ],
+          [
+            1650873900.781,
+            "0.006707357370377441"
+          ]
+        ]
+      }
+    ]
+  }
+}

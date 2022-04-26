@@ -490,3 +490,6 @@ PrometheusScrapeEndpoint
 [Prometheus 查询语言 PromQL 使用说明](https://jimmysong.io/kubernetes-handbook/practice/promql.html)  
 [官方HTTP API接口文档](https://prometheus.io/docs/prometheus/latest/querying/api/)  
 
+
+具体解析数据可以参考 [promql_java_client](https://github.com/mckang/promql_java_client)
+
